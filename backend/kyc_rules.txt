@@ -1,0 +1,5 @@
+1. Aadhaar number must be 12 digits.
+2. PAN number must be 10 alphanumeric characters.
+3. Name on documents must match.
+4. Photo must be clear.
+5. Signature must be present.
