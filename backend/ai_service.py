@@ -161,5 +161,25 @@ class AIEngine:
         data = f"User Question: {user_message}\n\nAccount Context:\n{context_data}"
         return self._query(prompt, data)
 
+
+    def check_loan_eligibility(self, income, credit_score, existing_emi):
+ 
+        # Python-side preparation
+        data = (
+            f"Monthly Income: Rs.{income}\n"
+            f"Credit Score: {credit_score}\n"
+            f"Existing EMI: Rs.{existing_emi}\n"
+        )
+
+        prompt = (
+            "You are a Bank Loan Officer.\n"
+            "1. Assess loan eligibility.\n"
+            "2. Mention risk level.\n"
+            "3. Suggest max safe loan amount.\n"
+            "Be clear and customer-friendly."
+        )
+
+        return self._query(prompt, data)
+
 # Initialize singleton instance
 ai = AIEngine()

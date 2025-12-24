@@ -1967,6 +1967,50 @@ def analyze_kyc_document(kyc_id):
         response = jsonify({"message": f"Internal server error: {str(e)}"})
         return response, 500
 
+@app.route('/api/loan/check', methods=['POST'])
+def check_loan_eligibility():
+    try:
+        data = request.get_json()
+
+        # 1. Validate input
+        income = data.get("monthly_income")
+        credit_score = data.get("credit_score")
+        existing_emi = data.get("existing_emi")
+
+        if income is None or credit_score is None or existing_emi is None:
+            return jsonify({
+                "message": "monthly_income, credit_score, and existing_emi are required"
+            }), 400
+
+        # 2. Run AI
+        result = ai.check_loan_eligibility(
+            income=income,
+            credit_score=credit_score,
+            existing_emi=existing_emi
+        )
+
+        # 3. Basic status extraction
+        if "eligible" in result.lower():
+            status = "Eligible"
+        elif "risk" in result.lower():
+            status = "High Risk"
+        else:
+            status = "Review Needed"
+
+        # 4. Response
+        return jsonify({
+            "ai_status": status,
+            "ai_remarks": result
+        }), 200
+
+    except Exception as e:
+        print(f"Error in check_loan_eligibility: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            "message": "Internal server error"
+        }), 500
+
 
 # --- Feature 2: Dispute Drafter (Smart Context) ---
 @app.route('/api/employee/draft-dispute/<int:issue_id>', methods=['GET'])
